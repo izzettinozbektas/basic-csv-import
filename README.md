@@ -33,3 +33,7 @@ Proje Hakkında
  basit bir csv import case dir, acılan pencerede csv formatında dosyaları veritabanına ekleyip kontrol edilmesi planlanmıştır.
 
 
+### Not
+ - kurulum.sh ile kurulum bittikten sonra migration çalışmaması yada connection refushed hatası durumunda
+ Proje dizininde bu kodu çalıştırın `docker compose --profile tools run migrate`
+
