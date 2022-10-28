@@ -1,0 +1,16 @@
+{
+  "name": "vendor_name/site",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "izzettin",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "phpoffice/phpspreadsheet": "^1.23",
+    "ext-gd": "*"
+  }
+}

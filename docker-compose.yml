@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  # PHP service
+  app:
+    build: ./docker/php/.
+    container_name: app-php
+    working_dir: /var/www/site
+    volumes:
+      - ./site:/var/www/site
+      - ./docker/php/php.ini/:/usr/local/etc/php/php.ini/
+    networks:
+      - app-network
+
+  # Nginx service
+  nginx:
+    image: nginx:alpine
+    container_name: app-nginx
+    working_dir: /var/www/site
+    ports:
+      - "8001:80"
+    volumes:
+      - ./site:/var/www/site
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+  # Mysql service
+  mysql:
+    image: mysql:8.0
+    container_name: app-mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=dev
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=apppass
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  # PhpMyadmin service
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8002:80"
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      - app-network
+
+  #migration create
+  migrate: &basemigrate
+    profiles: [ "tools" ]
+    image: migrate/migrate
+    entrypoint: ["migrate", "-database", "mysql://root:root@tcp(app-mysql)/dev" ,"-path" ,"/tmp/migrations"]
+    command: up
+    links:
+      - mysql
+    volumes:
+      - ./migrations:/tmp/migrations
+    networks:
+      - app-network
+
+  create-migration:
+    <<: *basemigrate
+    entrypoint: migrate create -dir /tmp/migrations -ext sql
+    command: ""
+
+networks:
+  app-network:
+    driver: bridge

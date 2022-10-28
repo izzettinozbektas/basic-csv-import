@@ -1,0 +1,12 @@
+CREATE TABLE users (
+    id INT NOT NULL AUTO_INCREMENT ,
+    name VARCHAR(200) NULL ,
+    surname VARCHAR(200) NULL ,
+    email VARCHAR(200) UNIQUE NULL ,
+    employee_id DECIMAL(15,0) UNIQUE NULL ,
+    phone DECIMAL(15,0) UNIQUE NULL ,
+    point DECIMAL(15,0) NULL ,
+    PRIMARY KEY (id)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
